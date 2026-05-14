@@ -1,18 +1,1 @@
-```
-# Python compiled files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Logs
-*.log
-
-# Database
-*.db
-
-# Environment
-.env
-.env.local
-*.env.*
-```
+Nothing should be ignored in this case, as the added files are all source code files (.py) and a markdown file (.md), which should be tracked by git. There are no build artifacts, dependencies, or temporary files in the changes.
