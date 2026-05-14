@@ -217,6 +217,28 @@ def cmd_monitor(args):
     return 0
 
 
+def cmd_analyze(args):
+    """Execute packet analysis command"""
+    from network.packet_analyzer_pro import PacketAnalyzerPro
+    
+    print("\n🔍 Starting Packet Analysis...")
+    analyzer = PacketAnalyzerPro()
+    
+    if not os.path.exists(args.file):
+        print(f"❌ File not found: {args.file}")
+        return 1
+    
+    results = analyzer.analyze_pcap(args.file)
+    
+    if results:
+        analyzer.print_summary(results)
+        
+        if args.export:
+            analyzer.export_analysis(results, format=args.export, filename=args.output)
+    
+    return 0
+
+
 def main():
     """Main CLI entry point"""
     parser = argparse.ArgumentParser(
@@ -230,6 +252,7 @@ Examples:
   %(prog)s crack --capture handshake.pcap --ai
   %(prog)s security --status --report
   %(prog)s monitor --duration 30
+  %(prog)s analyze --file capture.pcap --export json
         """
     )
     
@@ -280,6 +303,13 @@ Examples:
     monitor_parser = subparsers.add_parser('monitor', help='Monitor devices')
     monitor_parser.add_argument('--duration', type=int, default=30, help='Monitor duration')
     monitor_parser.set_defaults(func=cmd_monitor)
+    
+    # Analyze command (NEW)
+    analyze_parser = subparsers.add_parser('analyze', help='Analyze packet captures')
+    analyze_parser.add_argument('--file', '-f', required=True, help='PCAP file to analyze')
+    analyze_parser.add_argument('--export', choices=['json', 'csv'], help='Export format')
+    analyze_parser.add_argument('--output', '-o', help='Output filename')
+    analyze_parser.set_defaults(func=cmd_analyze)
     
     args = parser.parse_args()
     
