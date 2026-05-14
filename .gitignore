@@ -1,26 +1,26 @@
 ```
-# Compiled Python files
-*.pyc
+# Python
 __pycache__/
-
-# Dependencies
+*.pyc
+*.pyo
+*.pyd
+.Python
 venv/
 .venv/
-node_modules/
-
-# Environment files
 .env
 .env.local
-*.env.*
+.env.*
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
 
 # Editors
 .vscode/
 .idea/
-
-# Logs and temporary files
-*.log
-*.tmp
-*.swp
 
 # Build artifacts
 dist/
