@@ -1,1 +1,30 @@
-Nothing should be ignored in this case, as the added files are all source code files (.py) and a markdown file (.md), which should be tracked by git. There are no build artifacts, dependencies, or temporary files in the changes.
+```
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Testing
+.pytest_cache/
+.mypy_cache/
+```
