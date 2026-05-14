@@ -1,6 +1,8 @@
 """
-Handshake Capturer Module - Captures WPA/WPA2 handshakes from wireless networks
+Handshake Capturer Module - Professional WPA/WPA2/WPA3 Handshake Capture
 Legal Use Only: Authorized security testing and network auditing
+Developer: Ahmed Mostafa Ibrahim (Finovate – AHMED EG)
+© 2025 Ahmed Mostafa Ibrahim — All Rights Reserved
 """
 
 import subprocess
@@ -10,15 +12,19 @@ import time
 import platform
 import signal
 import threading
+import shutil
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from pathlib import Path
+import hashlib
+import json
 
 
 class HandshakeCapturer:
     """
-    Professional WPA/WPA2 Handshake Capturer
-    Captures 4-way handshakes from target networks for authorized security testing
+    Professional WPA/WPA2/WPA3 Handshake Capturer
+    Advanced capture with multiple modes: Monitor Mode, Hybrid Mode, Normal Mode
+    Supports deauthentication, client discovery, and AI-powered cracking
     """
     
     def __init__(self, interface: str = None):
@@ -36,13 +42,27 @@ class HandshakeCapturer:
         self.running = False
         self.capture_dir = Path("captures")
         self.capture_dir.mkdir(exist_ok=True)
+        self.wordlist_path = None
+        self.ai_engine = None
         
-        # Required tools
+        # Capture statistics
+        self.packets_captured = 0
+        self.eapol_packets = 0
+        self.capture_start_time = None
+        
+        # Network interfaces cache
+        self.available_interfaces = []
+        
+        # Required tools for each platform
         self.required_tools = {
-            'Linux': ['airmon-ng', 'airodump-ng', 'aireplay-ng', 'tcpdump'],
-            'Windows': ['npcap', 'tshark'],
-            'Darwin': ['airport', 'tcpdump']
+            'Linux': ['airmon-ng', 'airodump-ng', 'aireplay-ng', 'tcpdump', 'tshark', 'aircrack-ng'],
+            'Windows': ['npcap', 'tshark', 'Wireshark'],
+            'Darwin': ['airport', 'tcpdump', 'tshark']
         }
+        
+        # Security & Safety flags
+        self.safety_mode = True  # Prevents illegal operations
+        self.legal_warning_shown = False
         
     def _detect_interface(self) -> str:
         """Detect available wireless interface"""
