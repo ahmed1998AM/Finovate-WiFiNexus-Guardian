@@ -239,6 +239,39 @@ def cmd_analyze(args):
     return 0
 
 
+def cmd_tools(args):
+    """Execute external tools management command"""
+    from drivers.external_tools_manager import ExternalToolsManager
+    
+    print("\n🔧 External Tools Manager...")
+    manager = ExternalToolsManager()
+    
+    if args.scan:
+        manager.detect_all_tools()
+    
+    elif args.install:
+        manager.install_tool(args.install, auto=args.auto)
+    
+    elif args.install_recommended:
+        manager.install_recommended(auto=args.auto)
+    
+    elif args.configure:
+        manager.configure_tool_path(args.tool, args.path)
+    
+    elif args.report:
+        manager.export_tools_report(args.output)
+    
+    elif args.interactive:
+        manager.display_tools_gui()
+    
+    else:
+        # Default: show status
+        manager.detect_all_tools()
+        print("\n💡 Use --interactive for full menu or --help for options")
+    
+    return 0
+
+
 def main():
     """Main CLI entry point"""
     parser = argparse.ArgumentParser(
@@ -253,6 +286,10 @@ Examples:
   %(prog)s security --status --report
   %(prog)s monitor --duration 30
   %(prog)s analyze --file capture.pcap --export json
+  %(prog)s tools --scan
+  %(prog)s tools --install aircrack-ng
+  %(prog)s tools --install-recommended
+  %(prog)s tools --interactive
         """
     )
     
@@ -310,6 +347,20 @@ Examples:
     analyze_parser.add_argument('--export', choices=['json', 'csv'], help='Export format')
     analyze_parser.add_argument('--output', '-o', help='Output filename')
     analyze_parser.set_defaults(func=cmd_analyze)
+    
+    # Tools command (NEW - External Tools Manager)
+    tools_parser = subparsers.add_parser('tools', help='Manage external security tools')
+    tools_parser.add_argument('--scan', '-s', action='store_true', help='Scan for installed tools')
+    tools_parser.add_argument('--install', '-i', metavar='TOOL', help='Install specific tool')
+    tools_parser.add_argument('--install-recommended', action='store_true', help='Install all recommended tools')
+    tools_parser.add_argument('--configure', action='store_true', help='Configure custom tool path')
+    tools_parser.add_argument('--tool', '-t', help='Tool name for configuration')
+    tools_parser.add_argument('--path', '-p', help='Custom path for tool')
+    tools_parser.add_argument('--report', '-r', action='store_true', help='Export tools report')
+    tools_parser.add_argument('--output', '-o', help='Report output filename')
+    tools_parser.add_argument('--interactive', '-I', action='store_true', help='Interactive mode')
+    tools_parser.add_argument('--auto', '-a', action='store_true', help='Automatic installation (no prompts)')
+    tools_parser.set_defaults(func=cmd_tools)
     
     args = parser.parse_args()
     
