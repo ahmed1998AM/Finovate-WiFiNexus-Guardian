@@ -1,0 +1,34 @@
+# WiFiNexus Guardian Version File
+# Developer: Ahmed Mostafa Ibrahim (Finovate – AHMED EG)
+# © 2025 Ahmed Mostafa Ibrahim — All Rights Reserved
+
+VERSION_MAJOR=1
+VERSION_MINOR=5
+VERSION_PATCH=0
+VERSION_STATUS=stable
+VERSION_CODENAME="Professional Security Edition"
+
+# Full version string
+VERSION_STRING=1.5.0
+
+# Build information
+BUILD_DATE=2025-05-15
+BUILD_NUMBER=150
+
+# Compatibility
+MIN_PYTHON_VERSION=3.8
+RECOMMENDED_PYTHON_VERSION=3.12
+
+# Platform Support
+SUPPORTED_PLATFORMS=Linux,Windows,macOS
+
+# Feature Flags
+FEATURE_HANDSHAKE_CAPTURE=true
+FEATURE_PMKID_ATTACK=true
+FEATURE_EVIL_TWIN=true
+FEATURE_WIDS_MONITOR=true
+FEATURE_FORENSIC_ANALYSIS=true
+FEATURE_AUTOMATION=true
+FEATURE_AI_ENGINE=true
+FEATURE_GUI=true
+FEATURE_CLI=true
