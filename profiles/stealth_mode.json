@@ -1,0 +1,52 @@
+{
+  "profile_name": "Stealth Mode",
+  "description": "وضع التخفي - عمليات هادئة وغير قابلة للكشف",
+  "version": "2.0.0",
+  
+  "settings": {
+    "scan": {
+      "passive_only": true,
+      "beacon_interval": 60,
+      "probe_requests": false,
+      "active_scanning": false
+    },
+    
+    "attack": {
+      "deauth_enabled": false,
+      "pmkid_capture": true,
+      "evil_twin": false,
+      "beacon_flood": false
+    },
+    
+    "security": {
+      "stealth_mode": true,
+      "mac_randomization": true,
+      "process_hiding": true,
+      "log_minimization": true
+    },
+    
+    "network": {
+      "channel_hop": false,
+      "monitor_mode": true,
+      "packet_injection": false
+    },
+    
+    "reports": {
+      "auto_generate": false,
+      "format": ["json"],
+      "verbosity": "minimal"
+    }
+  },
+  
+  "limits": {
+    "max_targets": 5,
+    "scan_duration": 300,
+    "capture_size_mb": 100
+  },
+  
+  "exclusions": {
+    "ssids": [],
+    "bssids": [],
+    "channels": []
+  }
+}

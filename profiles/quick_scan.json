@@ -1,0 +1,55 @@
+{
+  "profile_name": "Quick Scan",
+  "description": "مسح سريع - تحليل أولي للشبكات المحيطة",
+  "version": "2.0.0",
+  
+  "settings": {
+    "scan": {
+      "passive_only": true,
+      "beacon_interval": 5,
+      "probe_requests": false,
+      "active_scanning": true,
+      "duration_seconds": 60
+    },
+    
+    "attack": {
+      "deauth_enabled": false,
+      "pmkid_capture": false,
+      "evil_twin": false,
+      "beacon_flood": false,
+      "wps_attack": false,
+      "handshake_capture": false
+    },
+    
+    "security": {
+      "stealth_mode": true,
+      "mac_randomization": true,
+      "process_hiding": false,
+      "log_minimization": true
+    },
+    
+    "network": {
+      "channel_hop": true,
+      "monitor_mode": true,
+      "packet_injection": false
+    },
+    
+    "reports": {
+      "auto_generate": true,
+      "format": ["json", "txt"],
+      "verbosity": "summary"
+    }
+  },
+  
+  "limits": {
+    "max_targets": 20,
+    "scan_duration": 120,
+    "capture_size_mb": 10
+  },
+  
+  "exclusions": {
+    "ssids": [],
+    "bssids": [],
+    "channels": []
+  }
+}

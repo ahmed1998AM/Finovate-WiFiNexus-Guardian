@@ -1,0 +1,79 @@
+version: '3.8'
+
+# WiFiNexus Guardian - Docker Compose Configuration
+# تكوين Docker Compose للتشغيل المتكامل
+
+services:
+  wifinexus:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wifinexus_guardian
+    hostname: wifinexus-host
+    
+    # تشغيل بصلاحيات الجذر للوصول لشبكات WiFi
+    privileged: true
+    
+    # مشاركة شبكة المضيف (ضروري لعمليات WiFi)
+    network_mode: host
+    
+    # متغيرات البيئة
+    environment:
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - CAPTURE_DIR=/app/captures
+      - REPORTS_DIR=/app/reports
+    
+    # أحجام التخزين الدائمة
+    volumes:
+      - ./captures:/app/captures
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+      - ./database:/app/database
+      - /dev:/dev  # للوصول للأجهزة
+    
+    # الأجهزة المطلوبة
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    
+    # إعادة التشغيل التلقائي
+    restart: unless-stopped
+    
+    # حدود الموارد
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # الأمان
+    security_opt:
+      - no-new-privileges:true
+    
+    # سجلات الحاوية
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # خدمة واجهة الويب (اختيارية - للمستقبل)
+  web-ui:
+    image: nginx:alpine
+    container_name: wifinexus_webui
+    ports:
+      - "8080:80"
+    volumes:
+      - ./reports:/usr/share/nginx/html/reports:ro
+    depends_on:
+      - wifinexus
+    profiles:
+      - web
+
+# الشبكات
+networks:
+  default:
+    driver: bridge
