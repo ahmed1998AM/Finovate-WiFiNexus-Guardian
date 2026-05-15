@@ -1,19 +1,13 @@
 ```
-# Python cache files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+# Output directories
+reports_output/
 
-# Logs
+# Logs and temporary files
 *.log
-logs/
-
-# Database files
-*.db
+*.tmp
 
 # Environment files
 .env
 .env.local
-.env.*
+*.env.*
 ```
