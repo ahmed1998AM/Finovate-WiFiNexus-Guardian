@@ -288,6 +288,118 @@ class SecurityManager:
         """
         print(stealth_tips)
     
+    def _generate_random_mac(self) -> str:
+        """
+        Generate a random MAC address
+        
+        Returns:
+            str: Random MAC address in format XX:XX:XX:XX:XX:XX
+        """
+        import random
+        
+        # Generate 6 random bytes
+        mac_bytes = [random.randint(0x00, 0xFF) for _ in range(6)]
+        
+        # Set the locally administered bit (second least significant bit of first byte)
+        # and clear the multicast bit (least significant bit of first byte)
+        mac_bytes[0] = (mac_bytes[0] | 0x02) & 0xFE
+        
+        # Format as XX:XX:XX:XX:XX:XX
+        mac_str = ':'.join(f'{byte:02X}' for byte in mac_bytes)
+        
+        self._log_event(f"Generated random MAC: {mac_str}", level="security")
+        return mac_str
+    
+    def check_interface(self, interface_name: str) -> bool:
+        """
+        Check if a network interface exists and is available
+        
+        Args:
+            interface_name: Name of the network interface to check
+            
+        Returns:
+            bool: True if interface exists and is available, False otherwise
+        """
+        import subprocess
+        import os
+        
+        try:
+            # Check if interface exists using ip command (Linux)
+            if self.platform == "Linux":
+                result = subprocess.run(
+                    ['ip', 'link', 'show', interface_name],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                return result.returncode == 0
+            
+            # Check using netsh on Windows
+            elif self.platform == "Windows":
+                result = subprocess.run(
+                    ['netsh', 'interface', 'show', 'interface'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                return interface_name in result.stdout
+            
+            # For macOS, use ifconfig
+            elif self.platform == "Darwin":
+                result = subprocess.run(
+                    ['ifconfig', interface_name],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                return result.returncode == 0
+            
+            # Unknown platform - try generic method
+            else:
+                # Check if interface directory exists in /sys/class/net (Linux-like)
+                sys_path = f"/sys/class/net/{interface_name}"
+                return os.path.exists(sys_path)
+                
+        except subprocess.TimeoutExpired:
+            self._log_event(f"Interface check timeout for {interface_name}", level="warning")
+            return False
+        except FileNotFoundError:
+            self._log_event(f"Command not found for interface check on {self.platform}", level="warning")
+            return False
+        except Exception as e:
+            self._log_event(f"Error checking interface {interface_name}: {e}", level="error")
+            return False
+    
+    def log_security_event(self, event_type: str, message: str, details: Dict = None):
+        """
+        Log a security event with type and message
+        
+        Args:
+            event_type: Type of security event (e.g., 'INTRUSION', 'ACCESS', 'ERROR')
+            message: Human-readable message describing the event
+            details: Optional dictionary with additional event details
+        """
+        entry = {
+            'timestamp': datetime.now().isoformat(),
+            'event_type': event_type,
+            'message': message,
+            'level': 'security',
+            'platform': self.platform,
+            'details': details or {}
+        }
+        
+        self.audit_log.append(entry)
+        
+        # Write to log file
+        try:
+            with open(self.log_file, 'a') as f:
+                f.write(json.dumps(entry) + '\n')
+        except Exception as e:
+            print(f"Warning: Could not write to audit log: {e}")
+        
+        # Also print to console for immediate feedback
+        print(f"[{event_type}] {message}")
+    
     def get_security_status(self) -> Dict:
         """Get current security status"""
         return {
