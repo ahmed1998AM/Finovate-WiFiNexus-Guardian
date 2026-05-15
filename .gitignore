@@ -1,11 +1,11 @@
-```
+
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Logs and temp files
+# Logs and temporary files
 *.log
 *.tmp
 
@@ -27,4 +27,3 @@ node_modules/
 dist/
 build/
 target/
-```
