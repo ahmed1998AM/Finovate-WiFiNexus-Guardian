@@ -3,7 +3,7 @@
 ## نظرة عامة
 **WiFiNexus Guardian** هو منصة احترافية لتحليل ومراقبة وتشخيص شبكات WiFi مع دعم متقدم لنظام Windows، وذكاء اصطناعي مدمج، وتحليلات لاسلكية في الوقت الفعلي.
 
-**الإصدار الحالي**: 1.5.0 (Professional Security Edition)  
+**الإصدار الحالي**: 2.0.0 (Professional Security Edition)  
 **تاريخ التحديث**: 2025-05-15
 
 ---
@@ -399,7 +399,7 @@ db.initialize()
 
 ## 🛠️ استكشاف الأخطاء
 
-### Version 1.0.0 (Current Release)
+### Version 2.0.0 (Current Release)
 - ✅ Core UI and GUI
 - ✅ WiFi scanning and analysis
 - ✅ Windows integration with Npcap
@@ -414,8 +414,15 @@ db.initialize()
 - ✅ Evil Twin engine (authorized testing)
 - ✅ PMKID attack module
 - ✅ Handshake capture/cracking
+- ✅ Unit Tests (24 automated tests)
+- ✅ Docker Support
+- ✅ Profile System (Stealth, Aggressive, Quick)
+- ✅ WiGLE API Integration
+- ✅ CI/CD Pipeline
+- ✅ Security Manager with Stealth Mode
+- ✅ Process Cleanup & Monitoring
 
-### Future Versions
+### Future Versions (v2.1+)
 - 📅 Cloud sync and dashboard
 - 📅 Enterprise deployment tools
 - 📅 Distributed monitoring
