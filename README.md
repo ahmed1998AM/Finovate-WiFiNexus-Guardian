@@ -18,12 +18,18 @@
 - ✅ الأغراض التعليمية والبحثية
 - ✅ مراقبة شبكتك الشخصية
 
-### الاستخدامات المحظورة:
-- ❌ الوصول غير المصرح به للشبكات
-- ❌ سرقة بيانات الاعتماد
-- ❌ الاعتراض غير القانوني للحزم
-- ❌ هجمات الشبكات
-- ❌ أي نشاط ضار أو غير قانوني
+- 🌐 **WiFi Scanning** - Discover and analyze nearby wireless networks
+- 📶 **Signal Analysis** - Real-time signal strength monitoring and analytics
+- 🔍 **Hidden Network Detection** - Passive discovery of hidden SSIDs
+- 📱 **Device Monitoring** - Track connected devices on your network
+- 📊 **Packet Analysis** - Authorized packet inspection and protocol analysis
+- 📈 **Spectrum Analyzer** - Channel congestion and interference detection
+- ⚡ **Speed Test** - Network performance testing
+- 🤖 **AI Center** - AI-powered network diagnostics and recommendations
+- 📋 **Logs Center** - Comprehensive event and security logging
+- 🔌 **Plugin System** - Extensible architecture with plugin support
+- 🎨 **Multiple Themes** - Cyber Neon, Dark, and Light themes
+- 🔄 **Auto-Updater** - Automatic update checking and installation
 
 **المسؤولية القانونية تقع على عاتق المستخدم النهائي.**
 
@@ -49,7 +55,10 @@ sudo apt install -y net-tools wireless-tools
 ### تثبيت المشروع
 
 ```bash
-cd /workspace
+# Python 3.8 or higher required
+python --version
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -143,35 +152,37 @@ print(f"Download: {result['download_mbps']} Mbps")
 print(f"Upload: {result['upload_mbps']} Mbps")
 print(f"Ping: {result['ping_ms']} ms")
 ```
-
-### 4️⃣ ملتقط المصافحة (Handshake Capturer) ⭐
-التقاط مصافحة WPA/WPA2 من الشبكات المستهدفة.
-
-```python
-from network.handshake_capturer import HandshakeCapturer
-
-capturer = HandshakeCapturer()
-
-# التحقق من المتطلبات
-reqs = capturer.check_requirements()
-for tool, installed in reqs.items():
-    status = "✓" if installed else "✗"
-    print(f"{status} {tool}")
-
-# التقاط مصافحة مستهدفة
-target_bssid = "AA:BB:CC:DD:EE:FF"  # MAC الشبكة
-channel = 6  # قناة الشبكة
-
-handshake_file = capturer.capture_handshake_targeted(
-    target_bssid=target_bssid,
-    channel=channel,
-    timeout=120  # ثانية
-)
-
-if handshake_file:
-    print(f"✓ تم التقاط المصافحة: {handshake_file}")
-else:
-    print("لم يتم التقاط المصافحة")
+WiFiNexus Guardian/
+├── main.py                 # Application entry point
+├── config.py               # Central configuration
+├── cli.py                  # Command-line interface
+├── core/                   # Core system modules
+│   ├── initializer.py      # System initialization
+│   ├── hardware_layer.py   # Hardware abstraction
+│   ├── security_manager.py # Security management
+│   └── process_manager.py  # Process management
+├── gui/                    # Graphical user interface
+│   └── main_window.py      # Main application window
+├── ai/                     # AI engine and intelligence
+│   └── ai_engine.py        # Network analysis AI
+├── network/                # Network scanning modules
+├── attacks/                # Attack modules (authorized use only)
+├── defense/                # Defense and monitoring modules
+├── forensics/              # Forensic analysis tools
+├── automation/             # Automation engine
+├── simulation/             # Simulation environment
+├── packet_analyzer/        # Packet capture & analysis
+├── drivers/                # Driver management
+├── adapters/               # Network adapter management
+├── plugins/                # Plugin system
+│   └── examples/           # Example plugins
+├── database/               # Data storage
+├── reports/                # Report generation
+├── logs/                   # Application logs
+├── themes/                 # UI themes
+├── assets/                 # Images, icons, resources
+├── updates/                # Auto-update system
+└── wordlists/              # Password wordlists
 ```
 
 #### خطوات الالتقاط:
@@ -195,33 +206,34 @@ from packet_analyzer.packet_analyzer import PacketAnalyzer
 
 analyzer = PacketAnalyzer()
 
-# تحليل ملف PCAP
-results = analyzer.analyze_pcap("captures/capture_20250101_120000.pcap")
+### Available Themes
 
-# استخراج معلومات المصافحة
-hs_info = analyzer.extract_handshake_info("captures/capture_20250101_120000.pcap")
-print(f"Has Handshake: {hs_info['has_handshake']}")
-print(f"BSSID: {hs_info['bssid']}")
-print(f"ESSID: {hs_info['essid']}")
-print(f"EAPOL Count: {hs_info['eapol_count']}")
+1. **Cyber Neon** (Default)
+   - Primary: #00D9FF (Cyan)
+   - Secondary: #00FF88 (Green)
+   - Accent: #FF00FF (Magenta)
+   - Background: #0A0A0A (Dark)
 
-# الحصول على أكثر الأجهزة تحدثاً
-talkers = analyzer.get_top_talkers("captures/capture_20250101_120000.pcap", limit=10)
-for t in talkers:
-    print(f"{t['ip']}: {t['total']} packets")
+2. **Dark Mode**
+   - Primary: #2196F3 (Blue)
+   - Secondary: #03DAC6 (Teal)
+   - Background: #121212
 
-# تصدير التحليل
-analyzer.export_analysis("analysis_report.json", output_format="json")
+3. **Light Mode**
+   - Primary: #1976D2 (Blue)
+   - Secondary: #424242 (Gray)
+   - Background: #FAFAFA
+
+### Changing Theme
+
+Themes can be changed in Settings → Appearance, or programmatically:
+
+```python
+from themes import load_stylesheet
+
+stylesheet = load_stylesheet('cyber_neon')
+app.setStyleSheet(stylesheet)
 ```
-
-#### ميزات المحلل:
-- ✅ إحصائيات الحزم (TCP, UDP, ICMP)
-- ✅ توزيع البروتوكولات
-- ✅ اتصالات TCP/UDP
-- ✅ استعلامات DNS
-- ✅ طلبات HTTP
-- ✅ اكتشاف EAPOL (المصافحة)
-- ✅ تصدير JSON/CSV/TXT
 
 ---
 
@@ -306,6 +318,10 @@ for pcap in capture_dir.glob("*.pcap"):
         analyzer.export_analysis(report_file, output_format="txt")
 ```
 
+### Example Plugin
+
+See `plugins/examples/sample_plugin.py` for a complete working example.
+
 ---
 
 ## 🖥️ تشغيل الواجهة الرسومية
@@ -383,33 +399,28 @@ db.initialize()
 
 ## 🛠️ استكشاف الأخطاء
 
-### مشكلة: وضع المراقبة لا يعمل
-**الحل:**
-```bash
-# لينكس
-sudo airmon-ng check kill
-sudo airmon-ng start wlan0
+### Version 1.0.0 (Current Release)
+- ✅ Core UI and GUI
+- ✅ WiFi scanning and analysis
+- ✅ Windows integration with Npcap
+- ✅ Signal analytics
+- ✅ AI-powered network analysis
+- ✅ Plugin system
+- ✅ Multiple themes
+- ✅ Auto-updater
+- ✅ Automation engine
+- ✅ Forensic analysis tools
+- ✅ WIDS monitoring
+- ✅ Evil Twin engine (authorized testing)
+- ✅ PMKID attack module
+- ✅ Handshake capture/cracking
 
-# تحقق من الواجهة
-iwconfig
-```
-
-### مشكلة: عدم وجود حزم EAPOL
-**الحل:**
-- تأكد من وجود عملاء متصلين
-- أرسل حزم deauth لإجبار إعادة الاتصال
-- انتظر فترة أطول
-
-### مشكلة: tools غير مثبتة
-**الحل:**
-```bash
-# لينكس
-sudo apt install aircrack-ng tshark tcpdump wireshark
-
-# ويندوز
-# ثبّت Npcap من npcap.com
-# ثبّت Wireshark من wireshark.org
-```
+### Future Versions
+- 📅 Cloud sync and dashboard
+- 📅 Enterprise deployment tools
+- 📅 Distributed monitoring
+- 📅 Plugin marketplace
+- 📅 Mobile companion app
 
 ---
 
