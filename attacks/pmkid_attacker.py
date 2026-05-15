@@ -8,6 +8,8 @@ import logging
 import os
 import time
 import re
+import asyncio
+import subprocess
 from pathlib import Path
 from typing import Optional, Tuple, List
 from dataclasses import dataclass
@@ -24,6 +26,99 @@ class PMKIDResult:
     essid: Optional[str] = None
     pcap_file: Optional[str] = None
     message: str = ""
+
+
+class PMKIDParser:
+    """
+    Parser for PMKID hash files
+    Parses and validates PMKID captures in various formats
+    """
+    
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+    
+    def parse(self, file_path: str) -> Optional[dict]:
+        """
+        Parse a PMKID file and extract hash information
+        
+        Args:
+            file_path: Path to the PMKID file
+            
+        Returns:
+            Dictionary with parsed PMKID data or None if parsing fails
+        """
+        try:
+            with open(file_path, 'r') as f:
+                content = f.read().strip()
+            
+            # Try different PMKID formats
+            # Format 1: PMKID*MAC_AP*MAC_STA*ESSID
+            if '*' in content:
+                parts = content.split('*')
+                if len(parts) >= 4:
+                    return {
+                        'pmkid': parts[0],
+                        'mac_ap': parts[1],
+                        'mac_sta': parts[2],
+                        'essid': parts[3] if len(parts) > 3 else '',
+                        'format': 'hashcat_16800'
+                    }
+            
+            # Format 2: wlan0:*AA:BB:CC:DD:EE:FF:*TestNetwork:HASH
+            elif ':' in content and 'wlan' in content:
+                match = re.match(
+                    r'(\w+):\*([A-F0-9:]+):\*([^:]+):([A-F0-9]+)',
+                    content,
+                    re.IGNORECASE
+                )
+                if match:
+                    return {
+                        'interface': match.group(1),
+                        'bssid': match.group(2),
+                        'essid': match.group(3),
+                        'pmkid': match.group(4),
+                        'format': 'hcxdumptool'
+                    }
+            
+            self.logger.warning(f"Unknown PMKID format in file: {file_path}")
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"Failed to parse PMKID file: {e}")
+            return None
+    
+    def validate(self, pmkid_data: dict) -> bool:
+        """
+        Validate parsed PMKID data
+        
+        Args:
+            pmkid_data: Dictionary with PMKID data
+            
+        Returns:
+            True if valid, False otherwise
+        """
+        if not pmkid_data:
+            return False
+        
+        # Check required fields
+        required_fields = ['pmkid', 'bssid']
+        for field in required_fields:
+            if field not in pmkid_data:
+                return False
+        
+        # Validate PMKID format (32 hex chars)
+        pmkid = pmkid_data.get('pmkid', '')
+        if len(pmkid) != 32 or not re.match(r'^[A-F0-9]{32}$', pmkid, re.IGNORECASE):
+            return False
+        
+        # Validate BSSID format (12 hex chars with optional colons)
+        bssid = pmkid_data.get('bssid', '')
+        bssid_clean = bssid.replace(':', '').replace('-', '')
+        if len(bssid_clean) != 12 or not re.match(r'^[A-F0-9]{12}$', bssid_clean, re.IGNORECASE):
+            return False
+        
+        return True
+
 
 class PMKIDAttacker:
     """
@@ -52,6 +147,116 @@ class PMKIDAttacker:
         
         # Check for required tools
         self.use_hcxdumptool = RobustProcessManager.check_command_exists("hcxdumptool")
+        self.use_tshark = RobustProcessManager.check_command_exists("tshark")
+    
+    async def attack(self, target_bssid: str, essid: str = "", timeout: int = None) -> Optional[PMKIDResult]:
+        """
+        Main attack method - asynchronous PMKID capture
+        
+        Args:
+            target_bssid: Target AP MAC address
+            essid: Network name (optional)
+            timeout: Capture timeout in seconds
+            
+        Returns:
+            PMKIDResult with captured hash or None on failure/timeout
+        """
+        # Validate MAC address first
+        if not self._validate_mac(target_bssid):
+            raise ValueError(f"Invalid MAC address format: {target_bssid}")
+        
+        # Use provided timeout or default
+        capture_timeout = timeout or self.timeout
+        
+        self.is_running = True
+        try:
+            # Run capture with timeout
+            result = await asyncio.wait_for(
+                self._capture_pmkid(target_bssid, essid, capture_timeout),
+                timeout=capture_timeout + 10  # Add buffer for cleanup
+            )
+            return result
+        except asyncio.TimeoutError:
+            logger.warning(f"PMKID capture timed out after {capture_timeout}s")
+            return None
+        finally:
+            self.is_running = False
+    
+    def _validate_mac(self, mac_address: str) -> bool:
+        """
+        Validate MAC address format
+        
+        Args:
+            mac_address: MAC address string (with or without colons/dashes)
+            
+        Returns:
+            True if valid MAC format, False otherwise
+        """
+        if not mac_address:
+            return False
+        
+        # Remove separators
+        mac_clean = mac_address.replace(':', '').replace('-', '')
+        
+        # Must be exactly 12 hex characters
+        if len(mac_clean) != 12:
+            return False
+        
+        # Must be valid hexadecimal
+        return bool(re.match(r'^[A-F0-9]{12}$', mac_clean, re.IGNORECASE))
+    
+    def _generate_filename(self, bssid: str, essid: str = "") -> str:
+        """
+        Generate filename for PMKID capture file
+        
+        Args:
+            bssid: Target AP MAC address
+            essid: Network name
+            
+        Returns:
+            Filename string
+        """
+        # Clean BSSID for filename
+        bssid_clean = bssid.replace(':', '_').replace('-', '_')
+        
+        # Create safe ESSid for filename
+        essid_safe = essid.replace(' ', '_').replace('/', '_') if essid else ""
+        
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        
+        if essid_safe:
+            return f"pmkid_{bssid_clean}_{essid_safe}_{timestamp}.pmkid"
+        else:
+            return f"pmkid_{bssid_clean}_{timestamp}.pmkid"
+    
+    async def _capture_pmkid(self, target_bssid: str, essid: str, timeout: int) -> Optional[PMKIDResult]:
+        """
+        Internal method to capture PMKID
+        
+        Args:
+            target_bssid: Target AP MAC address
+            essid: Network name
+            timeout: Capture timeout
+            
+        Returns:
+            PMKIDResult or None on failure
+        """
+        logger.info(f"Starting PMKID capture on {target_bssid}")
+        
+        # Method 1: Using hcxdumptool (preferred)
+        if self.use_hcxdumptool:
+            return self._capture_with_hcxdumptool(target_bssid, 1, essid, timeout)
+        
+        # Method 2: Using tshark + aireplay-ng
+        elif self.use_tshark:
+            return self._capture_with_tshark(target_bssid, 1, essid, timeout)
+        
+        else:
+            logger.error("No suitable tool available for PMKID capture")
+            return PMKIDResult(
+                success=False,
+                message="No suitable tool available for PMKID capture. Install hcxdumptool or tshark."
+            )
     
     def capture_pmkid(
         self,
@@ -61,7 +266,7 @@ class PMKIDAttacker:
         timeout: int = 30
     ) -> PMKIDResult:
         """
-        Capture PMKID from target access point
+        Capture PMKID from target access point (synchronous version)
         
         Args:
             target_bssid: Target AP MAC address
