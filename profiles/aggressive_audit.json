@@ -1,0 +1,54 @@
+{
+  "profile_name": "Aggressive Audit",
+  "description": "وضع التدقيق العدواني - جميع الميزات الهجومية مفعلة",
+  "version": "2.0.0",
+  
+  "settings": {
+    "scan": {
+      "passive_only": false,
+      "beacon_interval": 1,
+      "probe_requests": true,
+      "active_scanning": true
+    },
+    
+    "attack": {
+      "deauth_enabled": true,
+      "pmkid_capture": true,
+      "evil_twin": true,
+      "beacon_flood": true,
+      "wps_attack": true,
+      "handshake_capture": true
+    },
+    
+    "security": {
+      "stealth_mode": false,
+      "mac_randomization": false,
+      "process_hiding": false,
+      "log_minimization": false
+    },
+    
+    "network": {
+      "channel_hop": true,
+      "monitor_mode": true,
+      "packet_injection": true
+    },
+    
+    "reports": {
+      "auto_generate": true,
+      "format": ["pdf", "html", "json"],
+      "verbosity": "detailed"
+    }
+  },
+  
+  "limits": {
+    "max_targets": 50,
+    "scan_duration": 3600,
+    "capture_size_mb": 2048
+  },
+  
+  "exclusions": {
+    "ssids": [],
+    "bssids": [],
+    "channels": []
+  }
+}
