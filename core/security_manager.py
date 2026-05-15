@@ -16,6 +16,69 @@ from typing import Dict, List, Optional
 from pathlib import Path
 
 
+
+class StealthModeDetector:
+    """
+    Advanced detector for stealth mode anomalies and beacon flooding
+    """
+    
+    def __init__(self):
+        self.beacon_threshold = 500  # Default threshold for beacon flood detection
+        self.detection_log = []
+    
+    def detect_beacon_flood(self, beacon_count: int, threshold: int = None) -> bool:
+        """
+        Detect if beacon frames count indicates flooding attack
+        
+        Args:
+            beacon_count: Number of beacon frames detected
+            threshold: Custom threshold (default: 500)
+            
+        Returns:
+            bool: True if flooding detected
+        """
+        thresh = threshold or self.beacon_threshold
+        is_flooding = beacon_count > thresh
+        
+        if is_flooding:
+            self.detection_log.append({
+                'type': 'beacon_flood',
+                'count': beacon_count,
+                'threshold': thresh,
+                'timestamp': datetime.now().isoformat()
+            })
+        
+        return is_flooding
+    
+    def detect_anomaly(self, metric: str, value: float, baseline: float, 
+                       tolerance: float = 0.2) -> bool:
+        """
+        Detect anomalies in network metrics
+        
+        Args:
+            metric: Name of the metric
+            value: Current value
+            baseline: Expected baseline value
+            tolerance: Acceptable deviation (default: 20%)
+            
+        Returns:
+            bool: True if anomaly detected
+        """
+        deviation = abs(value - baseline) / baseline if baseline > 0 else 0
+        is_anomaly = deviation > tolerance
+        
+        if is_anomaly:
+            self.detection_log.append({
+                'type': 'anomaly',
+                'metric': metric,
+                'value': value,
+                'baseline': baseline,
+                'deviation': deviation,
+                'timestamp': datetime.now().isoformat()
+            })
+        
+        return is_anomaly
+
 class SecurityManager:
     """
     Advanced Security Manager for WiFiNexus Guardian
@@ -34,6 +97,10 @@ class SecurityManager:
         self.security_level = "high"  # low, medium, high
         self.stealth_mode = False
         self.encryption_enabled = True
+        self.stealth_mode_active = False  # Alias for test compatibility
+        self.monitoring_enabled = True
+        self.monitored_processes = []
+        self.active_processes = []
         
         # Security paths
         self.config_dir = Path.home() / ".wifinexus"
@@ -189,6 +256,7 @@ class SecurityManager:
     def enable_stealth_mode(self):
         """Enable stealth mode (reduces detection footprint)"""
         self.stealth_mode = True
+        self.stealth_mode_active = True
         self._log_event("Stealth mode ENABLED", level="security")
         print("✓ Stealth mode enabled - Reduced detection footprint")
         
@@ -198,6 +266,7 @@ class SecurityManager:
     def disable_stealth_mode(self):
         """Disable stealth mode"""
         self.stealth_mode = False
+        self.stealth_mode_active = False
         self._log_event("Stealth mode DISABLED", level="info")
         print("✓ Stealth mode disabled")
     
@@ -429,6 +498,27 @@ Platform: {self.platform}
         
         return validation
 
+
+
+    def cleanup_all(self):
+        """Clean up all monitored and active processes"""
+        cleaned = 0
+        
+        # Clean active processes
+        for proc in self.active_processes:
+            try:
+                if proc.poll() is None:  # Process still running
+                    proc.terminate()
+                    cleaned += 1
+            except Exception:
+                pass
+        
+        # Clear monitored processes
+        self.monitored_processes.clear()
+        self.active_processes.clear()
+        
+        self._log_event(f"Cleaned up {cleaned} processes", level="info")
+        return cleaned
 
 # Singleton instance
 _security_manager_instance = None
