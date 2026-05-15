@@ -15,13 +15,13 @@ from datetime import datetime
 # =============================================================================
 VERSION = {
     'major': 1,
-    'minor': 5,
+    'minor': 0,
     'patch': 0,
     'status': 'stable',
     'codename': 'Professional Security Edition',
-    'string': '1.5.0',
+    'string': '1.0.0',
     'build_date': '2025-05-15',
-    'build_number': 150
+    'build_number': 100
 }
 
 # =============================================================================
