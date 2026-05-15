@@ -1,5 +1,18 @@
 /* WiFiNexus Guardian - Cyber Neon Theme */
 /* Professional Security Edition v1.0.0 */
+/* Developer: Ahmed Mostafa Ibrahim (Finovate – AHMED EG) */
+/* © 2025 Ahmed Mostafa Ibrahim — All Rights Reserved */
+
+/* 
+ * Color Palette:
+ * - Primary: #00D9FF (Cyan Neon)
+ * - Secondary: #00FF88 (Green Neon)
+ * - Background: #0A0A0A (Deep Black)
+ * - Panel: #1A1A1A (Dark Gray)
+ * - Warning: #FFAA00 (Amber)
+ * - Error: #FF4444 (Red)
+ * - Success: #00FF88 (Green)
+ */
 
 QWidget {
     background-color: #0A0A0A;
@@ -16,16 +29,19 @@ QMenuBar {
     background-color: #1A1A1A;
     color: #00D9FF;
     padding: 5px;
+    border-bottom: 1px solid #00D9FF;
 }
 
 QMenuBar::item:selected {
     background-color: #00D9FF;
     color: #0A0A0A;
+    border-radius: 3px;
 }
 
 QMenu {
     background-color: #1A1A1A;
     border: 1px solid #00D9FF;
+    border-radius: 5px;
 }
 
 QMenu::item:selected {
@@ -34,27 +50,59 @@ QMenu::item:selected {
 }
 
 QPushButton {
-    background-color: #1A1A1A;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #1A1A1A, stop:1 #0A0A0A);
     color: #00D9FF;
     border: 2px solid #00D9FF;
-    border-radius: 5px;
-    padding: 8px 16px;
+    border-radius: 8px;
+    padding: 10px 20px;
     font-weight: bold;
+    font-size: 10pt;
+    min-width: 80px;
 }
 
 QPushButton:hover {
-    background-color: #00D9FF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #00D9FF, stop:1 #00AAFF);
     color: #0A0A0A;
+    border: 2px solid #00FF88;
 }
 
 QPushButton:pressed {
     background-color: #00AAFF;
+    border: 2px solid #00D9FF;
 }
 
 QPushButton:disabled {
     background-color: #333333;
     color: #666666;
     border-color: #666666;
+}
+
+QPushButton#primaryButton {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #00D9FF, stop:1 #00AAFF);
+    color: #0A0A0A;
+}
+
+QPushButton#dangerButton {
+    border-color: #FF4444;
+    color: #FF4444;
+}
+
+QPushButton#dangerButton:hover {
+    background-color: #FF4444;
+    color: #FFFFFF;
+}
+
+QPushButton#successButton {
+    border-color: #00FF88;
+    color: #00FF88;
+}
+
+QPushButton#successButton:hover {
+    background-color: #00FF88;
+    color: #0A0A0A;
 }
 
 QLineEdit {

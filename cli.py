@@ -27,7 +27,7 @@ def print_banner():
 ║     ╚███╔███╔╝██║██║ ╚████║██║ ╚████║███████╗██║  ██║            ║
 ║      ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝            ║
 ║                                                                  ║
-║              NEXUS GUARDIAN v2.0.0                               ║
+║              WiFiNEXUS GUARDIAN v1.0.0                           ║
 ║       Professional Wireless Intelligence Platform                ║
 ║                                                                  ║
 ║  Developer: Ahmed Mostafa Ibrahim (Finovate – AHMED EG)          ║
@@ -293,7 +293,7 @@ Examples:
         """
     )
     
-    parser.add_argument('-v', '--version', action='version', version='WiFiNexus Guardian v2.0.0 - Professional Security Edition')
+    parser.add_argument('-v', '--version', action='version', version='WiFiNexus Guardian v1.0.0 - Professional Security Edition')
     parser.add_argument('--verbose', '-V', action='store_true', help='Verbose output')
     
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
