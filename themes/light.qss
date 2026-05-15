@@ -1,0 +1,10 @@
+/* WiFiNexus Guardian - Light Theme */
+
+QWidget { background-color: #FAFAFA; color: #212121; font-family: "Segoe UI"; }
+QMainWindow { background-color: #FAFAFA; }
+QPushButton { background-color: #FFFFFF; color: #1976D2; border: 1px solid #1976D2; border-radius: 4px; padding: 8px; }
+QPushButton:hover { background-color: #1976D2; color: #FFFFFF; }
+QLineEdit, QTextEdit { background-color: #FFFFFF; color: #212121; border: 1px solid #CCCCCC; border-radius: 3px; padding: 5px; }
+QTabBar::tab:selected { background-color: #1976D2; color: #FFFFFF; }
+QProgressBar { background-color: #E0E0E0; border: 1px solid #CCCCCC; }
+QProgressBar::chunk { background-color: #1976D2; }

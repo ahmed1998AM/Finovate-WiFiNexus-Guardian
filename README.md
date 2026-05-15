@@ -23,6 +23,9 @@ WiFiNexus Guardian is a professional cross-platform WiFi analysis, monitoring an
 - ⚡ **Speed Test** - Network performance testing
 - 🤖 **AI Center** - AI-powered network diagnostics and recommendations
 - 📋 **Logs Center** - Comprehensive event and security logging
+- 🔌 **Plugin System** - Extensible architecture with plugin support
+- 🎨 **Multiple Themes** - Cyber Neon, Dark, and Light themes
+- 🔄 **Auto-Updater** - Automatic update checking and installation
 
 ---
 
@@ -53,7 +56,7 @@ WiFiNexus Guardian is a professional cross-platform WiFi analysis, monitoring an
 ### Prerequisites
 
 ```bash
-# Python 3.12 or higher required
+# Python 3.8 or higher required
 python --version
 
 # Install dependencies
@@ -106,45 +109,69 @@ On first launch, you will see a legal warning. You must accept to continue:
 ```
 WiFiNexus Guardian/
 ├── main.py                 # Application entry point
+├── config.py               # Central configuration
+├── cli.py                  # Command-line interface
 ├── core/                   # Core system modules
 │   ├── initializer.py      # System initialization
-│   └── hardware_layer.py   # Hardware abstraction
+│   ├── hardware_layer.py   # Hardware abstraction
+│   ├── security_manager.py # Security management
+│   └── process_manager.py  # Process management
 ├── gui/                    # Graphical user interface
 │   └── main_window.py      # Main application window
 ├── ai/                     # AI engine and intelligence
 │   └── ai_engine.py        # Network analysis AI
 ├── network/                # Network scanning modules
+├── attacks/                # Attack modules (authorized use only)
+├── defense/                # Defense and monitoring modules
+├── forensics/              # Forensic analysis tools
+├── automation/             # Automation engine
+├── simulation/             # Simulation environment
 ├── packet_analyzer/        # Packet capture & analysis
 ├── drivers/                # Driver management
-│   ├── driver_manager.py   # Cross-platform driver manager
-│   └── npcap_checker.py    # Npcap verification
 ├── adapters/               # Network adapter management
-│   └── adapter_manager.py  # Adapter discovery
 ├── plugins/                # Plugin system
-│   └── plugin_manager.py   # Plugin lifecycle management
+│   └── examples/           # Example plugins
 ├── database/               # Data storage
-│   └── db_manager.py       # SQLite database manager
 ├── reports/                # Report generation
 ├── logs/                   # Application logs
 ├── themes/                 # UI themes
+├── assets/                 # Images, icons, resources
 ├── updates/                # Auto-update system
-└── assets/                 # Images, icons, resources
+└── wordlists/              # Password wordlists
 ```
 
 ---
 
 ## 🎨 UI Themes
 
-### Cyber Neon (Default)
-- Primary: #00D9FF (Cyan)
-- Secondary: #7A00FF (Purple)
-- Accent: #00FF99 (Green)
-- Background: #0A0A0A (Dark)
-
 ### Available Themes
-- Dark Mode
-- Light Mode
-- Neon Mode
+
+1. **Cyber Neon** (Default)
+   - Primary: #00D9FF (Cyan)
+   - Secondary: #00FF88 (Green)
+   - Accent: #FF00FF (Magenta)
+   - Background: #0A0A0A (Dark)
+
+2. **Dark Mode**
+   - Primary: #2196F3 (Blue)
+   - Secondary: #03DAC6 (Teal)
+   - Background: #121212
+
+3. **Light Mode**
+   - Primary: #1976D2 (Blue)
+   - Secondary: #424242 (Gray)
+   - Background: #FAFAFA
+
+### Changing Theme
+
+Themes can be changed in Settings → Appearance, or programmatically:
+
+```python
+from themes import load_stylesheet
+
+stylesheet = load_stylesheet('cyber_neon')
+app.setStyleSheet(stylesheet)
+```
 
 ---
 
@@ -171,6 +198,10 @@ plugins/my_plugin/
 ├── plugin.py        # Plugin code
 └── README.md        # Documentation
 ```
+
+### Example Plugin
+
+See `plugins/examples/sample_plugin.py` for a complete working example.
 
 ---
 
@@ -233,26 +264,28 @@ Contact: gogom8870@gmail.com
 
 ## 🛣️ Roadmap
 
-### Phase 1 (Current)
-- ✅ Core UI
-- ✅ WiFi scanning
-- ✅ Windows integration
+### Version 1.0.0 (Current Release)
+- ✅ Core UI and GUI
+- ✅ WiFi scanning and analysis
+- ✅ Windows integration with Npcap
 - ✅ Signal analytics
+- ✅ AI-powered network analysis
+- ✅ Plugin system
+- ✅ Multiple themes
+- ✅ Auto-updater
+- ✅ Automation engine
+- ✅ Forensic analysis tools
+- ✅ WIDS monitoring
+- ✅ Evil Twin engine (authorized testing)
+- ✅ PMKID attack module
+- ✅ Handshake capture/cracking
 
-### Phase 2
-- 🔄 Packet analysis
-- 🔄 Spectrum analyzer
-- 🔄 Realtime monitoring
-
-### Phase 3
-- 📅 AI engine integration
-- 📅 Cloud sync
-- 📅 Advanced reporting
-
-### Phase 4
-- 📅 Plugin marketplace
-- 📅 Enterprise deployment
+### Future Versions
+- 📅 Cloud sync and dashboard
+- 📅 Enterprise deployment tools
 - 📅 Distributed monitoring
+- 📅 Plugin marketplace
+- 📅 Mobile companion app
 
 ---
 
