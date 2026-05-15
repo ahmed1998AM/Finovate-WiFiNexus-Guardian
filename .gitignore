@@ -1,4 +1,16 @@
 ```
-# No build artifacts, dependencies, or temporary files detected in changes
-# Source files and documentation only
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dependencies
+venv/
+.venv/
+.env
+*.env.*
+
+# Logs
+*.log
 ```
