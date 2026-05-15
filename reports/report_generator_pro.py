@@ -234,7 +234,7 @@ class ProfessionalReportGenerator:
         data = [
             ['Report Information', ''],
             ['Generated:', timestamp],
-            ['Tool:', 'WiFiNexus Guardian v2.0'],
+            ['Tool:', 'WiFiNexus Guardian v1.0'],
             ['Assessment Type:', 'Wireless Security Audit'],
             ['Total Networks Scanned:', str(scan_data.get('total_networks', 0))],
             ['Vulnerable Networks:', str(scan_data.get('vulnerable_count', 0))],

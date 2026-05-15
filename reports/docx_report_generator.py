@@ -62,7 +62,7 @@ class DOCXReportGenerator:
         # البيانات الوصفية
         metadata = [
             ("تاريخ التقرير:", timestamp),
-            ("الإصدار:", "v2.0.0"),
+            ("الإصدار:", "v1.0.0"),
             ("الأداة:", "WiFiNexus Guardian")
         ]
         

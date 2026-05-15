@@ -131,7 +131,7 @@ class NetworkScannerTUI:
         # Header
         header_text = Text()
         header_text.append(" WiFiNexus Guardian ", style="bold white on blue")
-        header_text.append(" v2.0.0 ", style="black on yellow")
+        header_text.append(" v1.0.0 ", style="black on yellow")
         header_text.append(" - واجهة TUI التفاعلية", style="white")
         layout["header"].update(Panel(header_text, style="bold"))
         
@@ -272,7 +272,7 @@ def main():
     console = Console()
     
     console.print(Panel.fit(
-        "[bold blue]WiFiNexus Guardian v2.0.0[/bold blue]\n"
+        "[bold blue]WiFiNexus Guardian v1.0.0[/bold blue]\n"
         "[cyan]واجهة TUI التفاعلية[/cyan]",
         border_style="blue"
     ))
