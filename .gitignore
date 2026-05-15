@@ -1,51 +1,39 @@
-```python
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# Examples 1:
+(empty — output nothing)
 
-# Environment
+# Example 2 (Project with artifacts):
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+dist/
+build/
+target/
+# Dependencies
 .venv/
 venv/
-env/
-ENV/
-
-# IDE
+node_modules/
+.mypy_cache/
+.pytest_cache/
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+# Environment
+.env
+.env.local
+*.env.*
+# Editors
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# Logs
-*.log
-
-# OS
-.DS_Store
 Thumbs.db
-
+.DS_Store
 # Coverage
-.coverage
-htmlcov/
 coverage/
-
-# Testing
-.pytest_cache/
-.mypy_cache/
-```
+htmlcov/
+.coverage
+# Gradle
+.gradle/
+# Original rules preserved
+*.log
