@@ -1,0 +1,245 @@
+{
+  "report_metadata": {
+    "generated_at": "2026-05-15T10:19:54.085553",
+    "analyst": "WiFiNexus Guardian Forensic Module",
+    "case_id": "499dfe6be100",
+    "source_file": null,
+    "file_hashes": {}
+  },
+  "executive_summary": {
+    "networks_found": 2,
+    "clients_identified": 2,
+    "handshakes_captured": 1,
+    "credentials_recovered": 1,
+    "risk_level": "HIGH"
+  },
+  "detailed_findings": {
+    "networks": {
+      "total_networks": 2,
+      "encrypted_networks": 2,
+      "wpa2_networks": 1,
+      "wpa3_networks": 1,
+      "networks_list": [
+        {
+          "ssid": "TargetNetwork",
+          "bssid": "AA:BB:CC:DD:EE:FF",
+          "channel": 6,
+          "encryption": "WPA2-PSK",
+          "signal_strength": -45,
+          "first_seen": "2024-01-15T10:30:00",
+          "last_seen": "2024-01-15T11:45:00",
+          "beacon_count": 1250
+        },
+        {
+          "ssid": "GuestWiFi",
+          "bssid": "11:22:33:44:55:66",
+          "channel": 11,
+          "encryption": "WPA3-SAE",
+          "signal_strength": -62,
+          "first_seen": "2024-01-15T10:32:00",
+          "last_seen": "2024-01-15T11:40:00",
+          "beacon_count": 890
+        }
+      ]
+    },
+    "clients": {
+      "total_clients": 2,
+      "active_clients": 2,
+      "probing_networks": {
+        "HomeWiFi": [
+          "DE:AD:BE:EF:00:01"
+        ],
+        "OfficeNet": [
+          "DE:AD:BE:EF:00:01"
+        ],
+        "CafeFree": [
+          "DE:AD:BE:EF:00:01"
+        ],
+        "Starbucks": [
+          "CA:FE:BA:BE:00:02"
+        ],
+        "Airport_WiFi": [
+          "CA:FE:BA:BE:00:02"
+        ]
+      },
+      "high_activity_clients": [
+        {
+          "mac": "DE:AD:BE:EF:00:01",
+          "vendor": "Apple Inc.",
+          "total_packets": 38520
+        },
+        {
+          "mac": "CA:FE:BA:BE:00:02",
+          "vendor": "Samsung Electronics",
+          "total_packets": 21200
+        }
+      ]
+    },
+    "handshakes": [
+      {
+        "network_bssid": "AA:BB:CC:DD:EE:FF",
+        "client_mac": "DE:AD:BE:EF:00:01",
+        "timestamp": "2024-01-15T10:36:15",
+        "complete": true,
+        "file_path": "/captures/handshake_1.cap",
+        "hashcat_ready": true,
+        "pmkid_available": false
+      }
+    ],
+    "credentials": [
+      {
+        "network": "TargetNetwork",
+        "bssid": "AA:BB:CC:DD:EE:FF",
+        "password": "Summer2024!",
+        "method": "handshake_crack",
+        "crack_time": "45.3s",
+        "confidence": "high"
+      }
+    ]
+  },
+  "timeline": [
+    {
+      "timestamp": "2024-01-15T10:30:00",
+      "type": "network_appeared",
+      "description": "Network TargetNetwork (AA:BB:CC:DD:EE:FF) first detected"
+    },
+    {
+      "timestamp": "2024-01-15T10:32:00",
+      "type": "network_appeared",
+      "description": "Network GuestWiFi (11:22:33:44:55:66) first detected"
+    },
+    {
+      "timestamp": "2024-01-15T10:35:00",
+      "type": "client_connected",
+      "description": "Client DE:AD:BE:EF:00:01 connected to network"
+    },
+    {
+      "timestamp": "2024-01-15T10:36:15",
+      "type": "handshake_completed",
+      "description": "WPA Handshake captured for AA:BB:CC:DD:EE:FF"
+    },
+    {
+      "timestamp": "2024-01-15T10:40:00",
+      "type": "client_connected",
+      "description": "Client CA:FE:BA:BE:00:02 connected to network"
+    },
+    {
+      "timestamp": "2024-01-15T11:40:00",
+      "type": "network_last_seen",
+      "description": "Network GuestWiFi (11:22:33:44:55:66) last detected"
+    },
+    {
+      "timestamp": "2024-01-15T11:45:00",
+      "type": "network_last_seen",
+      "description": "Network TargetNetwork (AA:BB:CC:DD:EE:FF) last detected"
+    }
+  ],
+  "evidence_chain": [
+    {
+      "id": 1,
+      "type": "network_discovered",
+      "timestamp": "2026-05-15T10:19:54.085413",
+      "data": {
+        "ssid": "TargetNetwork",
+        "bssid": "AA:BB:CC:DD:EE:FF",
+        "channel": 6,
+        "encryption": "WPA2-PSK",
+        "signal_strength": -45,
+        "first_seen": "2024-01-15T10:30:00",
+        "last_seen": "2024-01-15T11:45:00",
+        "beacon_count": 1250
+      },
+      "hash": "17652c3aa3d4de1d"
+    },
+    {
+      "id": 2,
+      "type": "network_discovered",
+      "timestamp": "2026-05-15T10:19:54.085472",
+      "data": {
+        "ssid": "GuestWiFi",
+        "bssid": "11:22:33:44:55:66",
+        "channel": 11,
+        "encryption": "WPA3-SAE",
+        "signal_strength": -62,
+        "first_seen": "2024-01-15T10:32:00",
+        "last_seen": "2024-01-15T11:40:00",
+        "beacon_count": 890
+      },
+      "hash": "94fc7321a22fa475"
+    },
+    {
+      "id": 3,
+      "type": "client_discovered",
+      "timestamp": "2026-05-15T10:19:54.085487",
+      "data": {
+        "mac": "DE:AD:BE:EF:00:01",
+        "vendor": "Apple Inc.",
+        "connected_to": "AA:BB:CC:DD:EE:FF",
+        "first_seen": "2024-01-15T10:35:00",
+        "last_seen": "2024-01-15T11:30:00",
+        "packets_sent": 15420,
+        "packets_received": 23100,
+        "probe_requests": [
+          "HomeWiFi",
+          "OfficeNet",
+          "CafeFree"
+        ]
+      },
+      "hash": "872ccc8c6e8197c1"
+    },
+    {
+      "id": 4,
+      "type": "client_discovered",
+      "timestamp": "2026-05-15T10:19:54.085497",
+      "data": {
+        "mac": "CA:FE:BA:BE:00:02",
+        "vendor": "Samsung Electronics",
+        "connected_to": "AA:BB:CC:DD:EE:FF",
+        "first_seen": "2024-01-15T10:40:00",
+        "last_seen": "2024-01-15T11:25:00",
+        "packets_sent": 8900,
+        "packets_received": 12300,
+        "probe_requests": [
+          "Starbucks",
+          "Airport_WiFi"
+        ]
+      },
+      "hash": "802f88347d8ae6e2"
+    },
+    {
+      "id": 5,
+      "type": "handshake_captured",
+      "timestamp": "2026-05-15T10:19:54.085505",
+      "data": {
+        "network_bssid": "AA:BB:CC:DD:EE:FF",
+        "client_mac": "DE:AD:BE:EF:00:01",
+        "timestamp": "2024-01-15T10:36:15",
+        "complete": true,
+        "file_path": "/captures/handshake_1.cap",
+        "hashcat_ready": true,
+        "pmkid_available": false
+      },
+      "hash": "48dcd513b21c8487"
+    },
+    {
+      "id": 6,
+      "type": "credential_found",
+      "timestamp": "2026-05-15T10:19:54.085543",
+      "data": {
+        "network": "TargetNetwork",
+        "bssid": "AA:BB:CC:DD:EE:FF",
+        "password": "Summer2024!",
+        "method": "handshake_crack",
+        "crack_time": "45.3s",
+        "confidence": "high"
+      },
+      "hash": "28dec4c05e4698b5"
+    }
+  ],
+  "recommendations": [
+    "📌 Consider upgrading from WPA2 to WPA3 for enhanced security.",
+    "🔐 Handshakes captured. Ensure strong passwords (12+ chars, complex).",
+    "🚨 Credentials compromised! Change passwords immediately and audit access logs.",
+    "📡 Clients probing multiple networks. Review device security policies."
+  ]
+}
