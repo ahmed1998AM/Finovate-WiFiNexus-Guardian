@@ -1,18 +1,22 @@
-# Finovate WiFiNexus Guardian
+# 📡 Finovate WiFiNexus Guardian - دليل الاستخدام بالعربية
 
-## Professional Wireless Intelligence Platform
+## نظرة عامة
+**WiFiNexus Guardian** هو منصة احترافية لتحليل ومراقبة وتشخيص شبكات WiFi مع دعم متقدم لنظام Windows، وذكاء اصطناعي مدمج، وتحليلات لاسلكية في الوقت الفعلي.
 
-**Version:** 1.0.0  
-**Developer:** Ahmed Mostafa Ibrahim (Finovate – AHMED EG)  
-**© 2025 Ahmed Mostafa Ibrahim — All Rights Reserved**
+**الإصدار الحالي**: 1.5.0 (Professional Security Edition)  
+**تاريخ التحديث**: 2025-05-15
 
 ---
 
-## 📡 Overview
+## ⚠️ تحذير قانوني هام
 
-WiFiNexus Guardian is a professional cross-platform WiFi analysis, monitoring and diagnostics platform with advanced Windows support, AI-powered network intelligence, real-time wireless analytics, and enterprise-grade architecture.
+> **هذا البرنامج مخصص للاستخدام القانوني والأمني المصرح به فقط!**
 
-### Key Features
+### الاستخدامات المسموحة:
+- ✅ اختبار الأمان للشبكات التي تمتلكها
+- ✅ مراجعة الشبكات بإذن صريح من المالك
+- ✅ الأغراض التعليمية والبحثية
+- ✅ مراقبة شبكتك الشخصية
 
 - 🌐 **WiFi Scanning** - Discover and analyze nearby wireless networks
 - 📶 **Signal Analysis** - Real-time signal strength monitoring and analytics
@@ -27,33 +31,28 @@ WiFiNexus Guardian is a professional cross-platform WiFi analysis, monitoring an
 - 🎨 **Multiple Themes** - Cyber Neon, Dark, and Light themes
 - 🔄 **Auto-Updater** - Automatic update checking and installation
 
----
-
-## 🖥️ System Requirements
-
-### Supported Operating Systems
-- Windows 10/11
-- Windows Server 2019+
-- Linux (Ubuntu, Debian, Fedora, etc.)
-- macOS 10.15+
-
-### Hardware Requirements
-- **CPU:** Dual-core processor or better
-- **RAM:** 4GB minimum, 8GB recommended
-- **Storage:** 500MB free space
-- **Network:** WiFi adapter (internal or external)
-
-### Recommended Adapters
-- Intel WiFi adapters
-- Realtek RTL8812AU based adapters
-- Alfa AWUS series
-- TP-Link Archer series
+**المسؤولية القانونية تقع على عاتق المستخدم النهائي.**
 
 ---
 
-## 🚀 Installation
+## 🚀 التثبيت السريع
 
-### Prerequisites
+### المتطلبات الأساسية
+
+#### لنظام Linux:
+```bash
+sudo apt update
+sudo apt install -y python3 python3-pip git
+sudo apt install -y aircrack-ng tshark tcpdump wireshark
+sudo apt install -y net-tools wireless-tools
+```
+
+#### لنظام Windows:
+1. تثبيت Python 3.12+ من [python.org](https://www.python.org)
+2. تثبيت Npcap من [npcap.com](https://nmap.org/npcap/)
+3. تثبيت Tshark من [wireshark.org](https://www.wireshark.org)
+
+### تثبيت المشروع
 
 ```bash
 # Python 3.8 or higher required
@@ -63,49 +62,95 @@ python --version
 pip install -r requirements.txt
 ```
 
-### Dependencies
-
-```txt
+### ملف المتطلبات (requirements.txt):
+```
 PySide6>=6.6.0
-psutil>=5.9.0
-scapy>=2.5.0
-pyshark>=0.6
 fastapi>=0.109.0
 uvicorn>=0.27.0
+scapy>=2.5.0
+psutil>=5.9.0
+netifaces>=0.11.0
+pywifi>=1.1.2
 sqlite3
+requests>=2.31.0
+pandas>=2.1.0
+matplotlib>=3.8.0
 ```
-
-### Windows-Specific
-
-For full packet capture functionality on Windows:
-
-1. Download Npcap from: https://npcap.com/
-2. Install with these options enabled:
-   - WinPcap API compatibility mode
-   - Raw 802.11 traffic support
-3. Restart your computer
 
 ---
 
-## 🎯 Usage
+## 📁 هيكل المشروع
 
-### Running the Application
-
-```bash
-# From project root directory
-python main.py
 ```
-
-### First Run
-
-On first launch, you will see a legal warning. You must accept to continue:
-
-⚠️ **AUTHORIZED USE ONLY** - This software is for authorized network analysis only.
+/workspace/
+├── main.py                 # نقطة الدخول الرئيسية
+├── core/                   # النواة الأساسية
+│   ├── initializer.py      # تهيئة النظام
+│   └── hardware_layer.py   # طبقة الأجهزة
+├── gui/                    # واجهة المستخدم
+│   └── main_window.py      # النافذة الرئيسية
+├── network/                # وحدات الشبكة
+│   ├── wifi_scanner.py     # ماسح WiFi
+│   ├── device_monitor.py   # مراقب الأجهزة
+│   ├── speed_test.py       # اختبار السرعة
+│   └── handshake_capturer.py  # ملتقط المصافحة ⭐
+├── packet_analyzer/        # محلل الحزم
+│   └── packet_analyzer.py  # التحليل العميق ⭐
+├── ai/                     # الذكاء الاصطناعي
+│   └── ai_engine.py        # محرك AI
+├── database/               # قاعدة البيانات
+│   └── db_manager.py       # مدير SQLite
+├── captures/               # ملفات الالتقاط
+└── logs/                   # السجلات
+```
 
 ---
 
-## 📁 Project Structure
+## 🔧 الوحدات الرئيسية
 
+### 1️⃣ ماسح WiFi (WiFi Scanner)
+مسح الشبكات اللاسلكية القريبة وتحليلها.
+
+```python
+from network.wifi_scanner import WiFiScanner
+
+scanner = WiFiScanner()
+networks = scanner.scan_networks()
+
+for net in networks:
+    print(f"SSID: {net['ssid']}")
+    print(f"Signal: {net['signal_dbm']} dBm")
+    print(f"Channel: {net['channel']}")
+    print(f"Encryption: {net['encryption']}")
+```
+
+### 2️⃣ مراقب الأجهزة (Device Monitor)
+اكتشاف الأجهزة المتصلة بالشبكة.
+
+```python
+from network.device_monitor import DeviceMonitor
+
+monitor = DeviceMonitor()
+devices = monitor.discover_devices()
+
+for device in devices:
+    print(f"IP: {device['ip']}")
+    print(f"MAC: {device['mac']}")
+    print(f"Vendor: {device['vendor']}")
+```
+
+### 3️⃣ اختبار السرعة (Speed Test)
+قياس سرعة التنزيل والرفع وزمن الاستجابة.
+
+```python
+from network.speed_test import SpeedTest
+
+test = SpeedTest()
+result = test.run_speed_test()
+
+print(f"Download: {result['download_mbps']} Mbps")
+print(f"Upload: {result['upload_mbps']} Mbps")
+print(f"Ping: {result['ping_ms']} ms")
 ```
 WiFiNexus Guardian/
 ├── main.py                 # Application entry point
@@ -140,9 +185,26 @@ WiFiNexus Guardian/
 └── wordlists/              # Password wordlists
 ```
 
----
+#### خطوات الالتقاط:
+1. **تفعيل وضع المراقبة** (Monitor Mode)
+2. **بدء الالتقاط** على القناة المستهدفة
+3. **اكتشاف العملاء** المتصلين
+4. **إرسال Deauth** لإجبار إعادة الاتصال (اختياري)
+5. **انتظار المصافحة** (4-way handshake)
+6. **حفظ الملف** بصيغة PCAP و HCCAPX
 
-## 🎨 UI Themes
+#### الملفات المحفوظة:
+- `captures/capture_YYYYMMDD_HHMMSS.pcap` - ملف الالتقاط الخام
+- `captures/capture_YYYYMMDD_HHMMSS.hccapx` - صيغة Hashcat
+- `captures/handshake_log.txt` - سجل الالتقاطات
+
+### 5️⃣ محلل الحزم (Packet Analyzer) ⭐
+تحليل عميق للحزم captured في ملفات PCAP.
+
+```python
+from packet_analyzer.packet_analyzer import PacketAnalyzer
+
+analyzer = PacketAnalyzer()
 
 ### Available Themes
 
@@ -175,28 +237,85 @@ app.setStyleSheet(stylesheet)
 
 ---
 
-## 🔌 Plugin System
+## 🎯 سيناريوهات الاستخدام
 
-WiFiNexus Guardian supports a plugin ecosystem for extended functionality.
+### السيناريو 1: مسح شامل للشبكة
+```python
+from network.wifi_scanner import WiFiScanner
+from network.device_monitor import DeviceMonitor
 
-### Creating a Plugin
+# مسح الشبكات
+scanner = WiFiScanner()
+networks = scanner.scan_networks()
+print(f"الشبكات المكتشفة: {len(networks)}")
 
-```bash
-# Use the plugin manager to create a template
-from plugins.plugin_manager import PluginManager
+# تحليل ازدحام القنوات
+congestion = scanner.analyze_channel_congestion()
+print(f"أفضل قناة: {congestion['least_congested']}")
 
-pm = PluginManager()
-pm.initialize()
-pm.create_plugin_template("my_custom_plugin")
+# مراقبة الأجهزة
+monitor = DeviceMonitor()
+devices = monitor.discover_devices()
+print(f"الأجهزة المتصلة: {len(devices)}")
 ```
 
-### Plugin Structure
+### السيناريو 2: اختبار أمان الشبكة
+```python
+from network.handshake_capturer import HandshakeCapturer
+from packet_analyzer.packet_analyzer import PacketAnalyzer
 
+# إعداد الملتقط
+capturer = HandshakeCapturer()
+
+# التحقق من الأدوات
+if not all(capturer.check_requirements().values()):
+    print("⚠️ بعض الأدوات المطلوبة غير مثبتة")
+    print("ثبّت: aircrack-ng, tshark, tcpdump")
+
+# التقاط المصافحة
+handshake = capturer.capture_handshake_targeted(
+    target_bssid="AA:BB:CC:DD:EE:FF",
+    channel=11,
+    timeout=180
+)
+
+if handshake:
+    # تحليل المصافحة
+    analyzer = PacketAnalyzer()
+    hs_info = analyzer.extract_handshake_info(handshake)
+    
+    if hs_info['has_handshake']:
+        print("✓ المصافحة صحيحة وجاهزة للاختبار")
+        print(f"الملف: {handshake}")
+        print(f"HCCAPX: {handshake.replace('.pcap', '.hccapx')}")
 ```
-plugins/my_plugin/
-├── manifest.json    # Plugin metadata
-├── plugin.py        # Plugin code
-└── README.md        # Documentation
+
+### السيناريو 3: تحليل حركة المرور
+```python
+from packet_analyzer.packet_analyzer import PacketAnalyzer
+
+analyzer = PacketAnalyzer()
+
+# تحليل جميع ملفات الالتقاط
+from pathlib import Path
+
+capture_dir = Path("captures")
+for pcap in capture_dir.glob("*.pcap"):
+    print(f"\n{'='*50}")
+    print(f"تحليل: {pcap.name}")
+    print('='*50)
+    
+    results = analyzer.analyze_pcap(str(pcap))
+    
+    if results:
+        stats = results.get('statistics', {})
+        print(f"إجمالي الحزم: {stats.get('total_packets', 0)}")
+        print(f"استعلامات DNS: {results.get('dns_count', 0)}")
+        print(f"طلبات HTTP: {results.get('http_count', 0)}")
+        
+        # تصدير التقرير
+        report_file = str(pcap).replace('.pcap', '_report.txt')
+        analyzer.export_analysis(report_file, output_format="txt")
 ```
 
 ### Example Plugin
@@ -205,64 +324,80 @@ See `plugins/examples/sample_plugin.py` for a complete working example.
 
 ---
 
-## 🤖 AI Integration
+## 🖥️ تشغيل الواجهة الرسومية
 
-Supported AI Providers:
-- Ollama (Local LLM)
-- OpenAI GPT
-- Google Gemini
-- Anthropic Claude
-- DeepSeek
-- Local Models
+```bash
+python main.py
+```
 
-Configure AI provider in Settings → AI Center.
-
----
-
-## 📊 Reporting
-
-Export formats supported:
-- PDF
-- Excel (XLSX)
-- CSV
-- JSON
-- HTML
+### مميزات الواجهة:
+- 🎨 تصميم Cyber Neon عصري
+- 📊 لوحات معلومات حية
+- 📈 رسوم بيانية في الوقت الفعلي
+- 🔔 إشعارات وتنبيهات
+- 🌐 دعم RTL للعربية
+- 💾 حفظ التقارير والتصدير
 
 ---
 
-## 🔒 Security & Privacy
+## 📊 قواعد البيانات
 
-### Legal Compliance
-- Authorized use only
-- No unauthorized access features
-- No credential theft capabilities
-- No illegal interception tools
+يستخدم المشروع SQLite لتخزين:
+- سجلات المسح
+- نتائج اختبار السرعة
+- سجلات الالتقاطات
+- أحداث النظام
+- إعدادات المستخدم
 
-### Privacy Features
-- Encrypted logs
-- Local data protection
-- Secure report export
-- Session isolation
-- Permission-based modules
-
----
-
-## 🏢 Enterprise Edition
-
-WiFiNexus Guardian Enterprise includes:
-- Centralized monitoring
-- Cloud dashboard
-- Multi-site management
-- SIEM integration
-- Advanced reporting
-- API access
-- RBAC permissions
-
-Contact: gogom8870@gmail.com
+### الجداول:
+1. `wifi_scans` - نتائج مسح WiFi
+2. `speed_tests` - نتائج اختبار السرعة
+3. `handshake_captures` - سجلات المصافحة
+4. `devices` - الأجهزة المكتشفة
+5. `events` - أحداث النظام
+6. `settings` - الإعدادات
 
 ---
 
-## 🛣️ Roadmap
+## 🔐 الأمان والخصوصية
+
+### ميزات الحماية:
+- ✅ تشفير السجلات
+- ✅ حماية البيانات المحلية
+- ✅ عزل الجلسات
+- ✅ وحدات قائمة على الأذونات
+- ✅ تصدير آمن للتقارير
+
+### أفضل الممارسات:
+1. احفظ الملفات في مجلد آمن
+2. استخدم كلمات مرور قوية للملفات المشفرة
+3. امسح ملفات الالتقاط بعد الاستخدام
+4. لا تشارك الملفات مع آخرين
+
+---
+
+## ⚙️ التكوين المتقدم
+
+### تكوين الذكاء الاصطناعي
+```python
+from ai.ai_engine import AIEngine
+
+ai = AIEngine()
+ai.set_provider("ollama")  # أو "openai", "gemini"
+ai.configure(model="llama2", api_key="your-key")
+```
+
+### تكوين قاعدة البيانات
+```python
+from database.db_manager import DatabaseManager
+
+db = DatabaseManager(db_path="custom_db.sqlite")
+db.initialize()
+```
+
+---
+
+## 🛠️ استكشاف الأخطاء
 
 ### Version 1.0.0 (Current Release)
 - ✅ Core UI and GUI
@@ -289,32 +424,78 @@ Contact: gogom8870@gmail.com
 
 ---
 
-## 📞 Support & Contact
+## 📝 الترخيص والنشر
 
-**Developer:** Ahmed Mostafa Ibrahim  
-**Brand:** Finovate – AHMED EG  
-**Email:** gogom8870@gmail.com  
-**Phone:** 01225155329  
+© 2025 أحمدMostafa إبراهيم - جميع الحقوق محفوظة
 
-**GitHub:** https://github.com/ahmed1998AM  
-**Facebook:** https://www.facebook.com/profile.php?id=100049475271023
+**الإصدار الحالي**: 1.5.0 (Professional Security Edition)  
+**حالة الإصدار**: مستقر ✅
 
----
+### الترخيص:
+- **النسخة المجتمعية**: مجانية للاستخدام الشخصي والتعليمي
+- **النسخة التجارية**: تتطلب ترخيصًا للاستخدام التجاري
+- **النسخة المؤسسية**: متاحة للشركات والمنظمات
 
-## 📄 License
-
-© 2025 Ahmed Mostafa Ibrahim — All Rights Reserved
-
-Commercial + Community Edition
-
----
-
-## ⚠️ Legal Disclaimer
-
-This software is provided for authorized network analysis and educational purposes only. Users are responsible for complying with all applicable laws and regulations. Unauthorized access to computer networks is illegal.
-
-The developer assumes no liability for misuse of this software.
+### المطور:
+- **الاسم**: Ahmed Mostafa Ibrahim
+- **العلامة التجارية**: Finovate – AHMED EG
+- **البريد**: gogom8870@gmail.com
+- **الهاتف**: 01225155329
 
 ---
 
-**Built with ❤️ by Finovate**
+## 🗺️ خارطة الطريق
+
+### ✅ المرحلة 1-5 (مكتملة 100%):
+- [x] الواجهة الأساسية (GUI + CLI)
+- [x] مسح WiFi متعدد النطاقات
+- [x] تكامل Windows/Linux/macOS
+- [x] تحليل الإشارة والطيف
+- [x] التقاط المصافحة WPA/WPA2/WPA3
+- [x] هجوم PMKID
+- [x] محرك Evil Twin
+- [x] تحليل الحزم المتقدم
+- [x] نظام WIDS للدفاع
+- [x] التحليل الجنائي
+- [x] الأتمتة الكاملة
+- [x] الذكاء الاصطناعي
+- [x] توليد التقارير الاحترافية
+- [x] تثبيت الأدوات التلقائي
+
+### 🔄 المرحلة 6 (جارية):
+- [x] التحسينات الأمنية
+- [x] التوثيق الشامل
+- [ ] اختبارات آلية كاملة
+- [ ] تحسين الأداء
+
+### 🚀 المرحلة 7 (قادمة - v1.6.0):
+- [ ] المزامنة السحابية
+- [ ] تطبيق الجوال المرافق
+- [ ] التعاون في الوقت الفعلي
+- [ ] تنبؤات الذكاء الاصطناعي المتقدمة
+
+### 🔮 المرحلة 8 (مستقبلية - v2.0.0):
+- [ ] سوق الإضافات
+- [ ] نشر المؤسسات
+- [ ] المراقبة الموزعة
+- [ ] إعادة كتابة Rust للأداء
+
+---
+
+## 📞 الدعم والتواصل
+
+للأسئلة والدعم الفني:
+- 📧 البريد: gogom8870@gmail.com
+- 📱 الهاتف: 01225155329
+- 💻 GitHub: https://github.com/ahmed1998AM
+- 👤 Facebook: https://www.facebook.com/profile.php?id=100049475271023
+
+---
+
+## ⭐ شكر وتقدير
+
+شكرًا لاستخدامك **Finovate WiFiNexus Guardian**!
+
+نهدف إلى توفير أدوات احترافية وأخلاقية لأمن الشبكات. نرجو استخدام هذا البرنامج بمسؤولية ووفقًا للقوانين المحلية.
+
+**استخدم بحكمة، واختبر بأمان! 🛡️**
